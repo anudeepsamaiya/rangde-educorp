@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -72,6 +72,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         e.printStackTrace();
                                     }
                                     startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                                    preferences.edit().putBoolean("logged_in", true).apply();
                                 } else if (response.errorBody() != null)
                                     Log.d(TAG, response.errorBody().toString());
                             }
