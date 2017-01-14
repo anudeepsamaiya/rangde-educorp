@@ -1,6 +1,9 @@
 package com.anudeepsamaiya.rangde.educorp;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.view.View;
 
 import com.anudeepsamaiya.rangde.educorp.databinding.ActivityLoginBinding;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -22,14 +26,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     ActivityLoginBinding binding;
+    SharedPreferences preferences;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Please wait...");
+
+
+        preferences = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
+
         binding.btnLogin.setOnClickListener(this);
         binding.btnRegister.setOnClickListener(this);
+
     }
 
 
@@ -49,7 +62,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
                                 if (response.isSuccessful()) {
+                                    progressDialog.cancel();
                                     Log.d(TAG, response.body().toString());
+                                    try {
+                                        String api_key = response.body().getString("api_key");
+                                        preferences.edit().putString("api_key", api_key).apply();
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                                 } else if (response.errorBody() != null)
                                     Log.d(TAG, response.errorBody().toString());
                             }
@@ -59,6 +81,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 t.printStackTrace();
                             }
                         });
+                progressDialog.show();
             }
             break;
             case R.id.btnRegister:

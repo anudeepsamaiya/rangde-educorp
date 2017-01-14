@@ -38,10 +38,10 @@ public class NetworkManager {
     public interface EduCorpAuth {
 
         @GET("auth")
-        Call<JSONObject> registerUser(@QueryMap Map queryMap);
+        Call<JSONObject> registerUser(@QueryMap Map<String, String> queryMap);
 
         @GET("auth")
-        Call<JSONObject> loginUser(@QueryMap Map queryMap);
+        Call<JSONObject> loginUser(@QueryMap Map<String, String> queryMap);
     }
 
 }

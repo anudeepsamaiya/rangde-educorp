@@ -1,5 +1,6 @@
 package com.anudeepsamaiya.rangde.educorp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -32,6 +33,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     int accountType = -1;
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +42,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Please wait...");
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,13 +87,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
                                 if (response.isSuccessful()) {
+                                    progressDialog.cancel();
                                     Log.d(TAG, response.body().toString());
-                                    try {
-                                        if(response.body().getString("status").equalsIgnoreCase("success"))
-                                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+//                                    try {
+//                                        if (response.body().getString("status").equalsIgnoreCase("success"))
+                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                    }
                                 } else if (response.errorBody() != null)
                                     Log.d(TAG, response.errorBody().toString());
                             }
@@ -97,6 +104,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 t.printStackTrace();
                             }
                         });
+
+                progressDialog.show();
             }
 
         }
